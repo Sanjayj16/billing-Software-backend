@@ -1,29 +1,28 @@
-// server.js (or index.js)
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 
-// 1. Load .env into process.env
+// 1. Load environment variables
 dotenv.config();
 
+// 2. Initialize express app
 const app = express();
 
-// 2. Connect to MongoDB
+// 3. Connect to MongoDB
 connectDB(process.env.MONGODB_URI);
 
-// 3. Middleware
+// 4. Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Default route to fix "Cannot GET /"
+// 5. Root route for quick status check
 app.get('/', (req, res) => {
-  res.send("✅ Billing software backend is running.");
+  res.send("✅ Billing Software Backend is Live.");
 });
 
-// 4. Health check / ping route
+// 6. Health check (optional)
 app.get('/api/ping', async (req, res) => {
   try {
     const db = req.app.locals.db;
@@ -34,16 +33,16 @@ app.get('/api/ping', async (req, res) => {
   }
 });
 
-// 5. Invoice routes
+// 7. Invoice routes
 app.use('/api/invoice', invoiceRoutes);
 
-// 6. Start server
+// 8. Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// 7. Global unhandled rejection handler
+// 9. Catch unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error('✖ Unhandled Rejection:', err);
   process.exit(1);
