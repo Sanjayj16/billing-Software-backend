@@ -1,8 +1,8 @@
 // server.js (or index.js)
 
 const express = require('express');
-const cors    = require('cors');
-const dotenv  = require('dotenv');
+const cors = require('cors');
+const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 
@@ -18,7 +18,12 @@ connectDB(process.env.MONGODB_URI);
 app.use(cors());
 app.use(express.json());
 
+// ✅ Default route to fix "Cannot GET /"
+app.get('/', (req, res) => {
+  res.send("✅ Billing software backend is running.");
+});
 
+// 4. Health check / ping route
 app.get('/api/ping', async (req, res) => {
   try {
     const db = req.app.locals.db;
